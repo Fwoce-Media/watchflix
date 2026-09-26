@@ -8,8 +8,8 @@ artifacts/
 .vs/
 *.user
 
-# never commit a library
-Data/
+# never commit a library (a portable copy's Data folder, only at the top level)
+/Data/
 *.db
 *.db-wal
 *.db-shm
