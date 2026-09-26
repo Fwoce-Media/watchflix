@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- WatchFlix: the native Windows app. Open WatchFlix.sln in Visual Studio
+       and press F5; NuGet fetches the video player the first time. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>WatchFlix</AssemblyName>
+    <RootNamespace>WatchFlix.Desktop</RootNamespace>
+    <StartupObject>WatchFlix.Desktop.Program</StartupObject>
+    <ApplicationIcon>watchflix.ico</ApplicationIcon>
+    <Version>4.1.0</Version>
+    <Product>WatchFlix</Product>
+    <Company>Fwoce Media</Company>
+    <Authors>Fwoce Media</Authors>
+    <Description>A library for the films and series you own.</Description>
+    <Copyright>Copyright © 2026 Fwoce Media</Copyright>
+    <PlatformTarget>x64</PlatformTarget>
+    <!-- Only the 64-bit VLC libraries are copied beside the app. -->
+    <VlcWindowsX86Enabled>false</VlcWindowsX86Enabled>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibVLCSharp.WPF" Version="3.9.0" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="watchflix.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WatchFlix.Core\WatchFlix.Core.csproj" />
+  </ItemGroup>
+
+</Project>

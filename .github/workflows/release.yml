@@ -1,0 +1,98 @@
+name: Release
+
+# Push a version tag and this builds both downloads and opens a draft release:
+#
+#   git tag v4.1.0
+#   git push origin v4.1.0
+#
+# Run it from the Actions tab instead to check it builds without releasing.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Work out the version
+        id: version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = if ($tag -match '^v(\d+\.\d+\.\d+)$') { $Matches[1] } else { '0.0.0' }
+          "version=$version" >> $env:GITHUB_OUTPUT
+          Write-Host "Building version $version"
+
+      - name: Build
+        shell: pwsh
+        run: |
+          # A folder rather than a single file: VLC's player is a few hundred
+          # plugin libraries that load from the libvlc folder beside the exe.
+          dotnet publish src/WatchFlix.Desktop/WatchFlix.Desktop.csproj `
+            -c Release -r win-x64 --self-contained true `
+            -p:PublishReadyToRun=true `
+            -p:Version=${{ steps.version.outputs.version }} `
+            -o publish
+          if (-not (Test-Path publish/WatchFlix.exe)) { throw "WatchFlix.exe missing from the build" }
+          if (-not (Test-Path publish/libvlc/win-x64/libvlc.dll)) { throw "the VLC libraries are missing from the build" }
+
+      - name: Package the portable download
+        shell: pwsh
+        run: |
+          # This marker keeps the library in a Data folder beside the program,
+          # so the portable copy leaves nothing on the machine it runs on.
+          "WatchFlix portable. Delete this file to keep your library in your user folder instead." |
+            Set-Content publish/portable.txt
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          Compress-Archive -Path publish/* `
+            -DestinationPath "artifacts/WatchFlix-${{ steps.version.outputs.version }}-portable.zip"
+
+      - name: Build the installer
+        shell: pwsh
+        run: |
+          # The installed copy is not portable; that marker belongs only in the zip.
+          Remove-Item publish/portable.txt
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          & $iscc /DAppVersion=${{ steps.version.outputs.version }} `
+                  /DSourceDir=..\publish `
+                  /O"$PWD\artifacts" `
+                  installer\WatchFlix.iss
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed" }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: WatchFlix-${{ steps.version.outputs.version }}
+          path: artifacts/*
+
+      - name: Publish the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true            # look it over, then press Publish
+          name: WatchFlix ${{ steps.version.outputs.version }}
+          files: artifacts/*
+          body: |
+            ## Downloads
+
+            | | |
+            |---|---|
+            | **WatchFlix-${{ steps.version.outputs.version }}-Setup.exe** | Installer. Adds a Start menu entry and an uninstaller. |
+            | **WatchFlix-${{ steps.version.outputs.version }}-portable.zip** | Unzip and run. Keeps everything in its own folder. |
+
+            Windows 10 or 11, 64-bit. Nothing else to install.
+
+            **ffmpeg** is used for poster frames and hover previews. Install it
+            and the app finds it, or put `ffmpeg.exe` and `ffprobe.exe` beside
+            `WatchFlix.exe`.

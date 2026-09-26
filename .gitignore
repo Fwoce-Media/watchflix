@@ -1,0 +1,16 @@
+# build output
+bin/
+obj/
+publish/
+artifacts/
+
+# Visual Studio
+.vs/
+*.user
+
+# never commit a library
+Data/
+*.db
+*.db-wal
+*.db-shm
+settings.json
