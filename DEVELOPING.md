@@ -53,8 +53,8 @@ draft release with `WatchFlix-<version>-Setup.exe` and
 `WatchFlix-<version>-portable.zip`:
 
 ```
-git tag v4.1.0
-git push origin v4.1.0
+git tag v4.1.1
+git push origin v4.1.1
 ```
 
 The installer script is `installer\WatchFlix.iss` (Inno Setup 6). A

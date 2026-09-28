@@ -12,7 +12,7 @@
     <RootNamespace>WatchFlix.Desktop</RootNamespace>
     <StartupObject>WatchFlix.Desktop.Program</StartupObject>
     <ApplicationIcon>watchflix.ico</ApplicationIcon>
-    <Version>4.1.0</Version>
+    <Version>4.1.1</Version>
     <Product>WatchFlix</Product>
     <Company>Fwoce Media</Company>
     <Authors>Fwoce Media</Authors>
@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="LibVLCSharp.WPF" Version="3.9.0" />
-    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
   </ItemGroup>
 
   <ItemGroup>

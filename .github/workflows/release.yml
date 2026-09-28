@@ -2,8 +2,8 @@ name: Release
 
 # Push a version tag and this builds both downloads and opens a draft release:
 #
-#   git tag v4.1.0
-#   git push origin v4.1.0
+#   git tag v4.1.1
+#   git push origin v4.1.1
 #
 # Run it from the Actions tab instead to check it builds without releasing.
 

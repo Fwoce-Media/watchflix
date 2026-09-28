@@ -10,7 +10,7 @@
 #define AppPublisher "Fwoce Media"
 #define AppExe       "WatchFlix.exe"
 #ifndef AppVersion
-  #define AppVersion "4.1.0"
+  #define AppVersion "4.1.1"
 #endif
 #ifndef SourceDir
   #define SourceDir "..\publish"

@@ -10,7 +10,7 @@ namespace WatchFlix.Core;
 public static class Config
 {
     public const string AppName = "WatchFlix";
-    public const string AppVersion = "4.1.0";
+    public const string AppVersion = "4.1.1";
 
     public static readonly string AppHome = ResolveHome();
 
